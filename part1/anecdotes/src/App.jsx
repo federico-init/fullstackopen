@@ -16,9 +16,10 @@ const App = () => {
   // states
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
+  const [mostVoted, setMostVoted] = useState(null);
 
   // event handler functions
-  const handleClick = () => {
+  const handleClickNext = () => {
     const randomNumber = Math.floor(Math.random() * anecdotes.length);
 
     setSelected(randomNumber);
@@ -28,14 +29,31 @@ const App = () => {
     newVotes[selected] += 1;
 
     setVotes(newVotes);
+
+    // getting the highest value in votes array
+    const mostVotedValue = Math.max(...newVotes);
+
+    // finding the first index in votes array with highest value
+    const mostVotedIndex = newVotes.indexOf(mostVotedValue);
+
+    setMostVoted(mostVotedIndex);
   };
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>This anecdote has {votes[selected]} votes</p>
       <Button onClick={handleClickVote}>Vote anecdote</Button>
-      <Button onClick={handleClick}>Show random anecdote</Button>
+      <Button onClick={handleClickNext}>Show random anecdote</Button>
+      <h1>Anecdote with most votes</h1>
+
+      {mostVoted && (
+        <>
+          <p>{anecdotes[mostVoted]}</p>
+          <p>This anecdote has {votes[mostVoted]} votes</p>
+        </>
+      )}
     </>
   );
 };
