@@ -37,6 +37,7 @@ const App = () => {
       <div>Total: {totalFeedbacks}</div>
       <div>Average score: {getAverageScore()}</div>
       <div>Positive: {getPositivePercentage()}</div> */}
+      <h1>Statistics</h1>
       <Statistics
         good={good}
         neutral={neutral}

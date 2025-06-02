@@ -13,9 +13,12 @@ const Statistics = ({ good, neutral, bad, totalFeedbacks }) => {
     return positivePercentage || 0;
   };
 
+  if (totalFeedbacks === 0) {
+    return <p>No feedback yet</p>;
+  }
+
   return (
     <>
-      <h1>Statistics</h1>
       <div>🙂 : {good}</div>
       <div>😐 : {neutral}</div>
       <div>☹️ : {bad}</div>
