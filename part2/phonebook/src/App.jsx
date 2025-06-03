@@ -7,22 +7,23 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const personToAdd = {
-      name: newName,
-    };
-
-    console.log(personToAdd);
-
-    if (personToAdd) {
+    if (isPersonRegistered(newName)) {
+      alert(`${newName} is already added to phonebook`);
+    } else {
+      const personToAdd = {
+        name: newName,
+      };
       setPersons([...persons, personToAdd]);
       setNewName("");
     }
   };
 
   const handleChangeName = (event) => {
-    const value = event.target.value;
-    console.log(value);
-    setNewName(value);
+    setNewName(event.target.value);
+  };
+
+  const isPersonRegistered = (name) => {
+    return persons.some((person) => person.name === name);
   };
 
   return (
