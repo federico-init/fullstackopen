@@ -1,7 +1,11 @@
-const PersonsList = ({ persons }) => {
+const PersonsList = ({ persons, searchTerm }) => {
+  const filteredPersons = persons.filter((person) =>
+    person.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <>
-      {persons.map((person) => (
+      {filteredPersons.map((person) => (
         <div key={person.name}>
           {person.name} {person.number}
         </div>
