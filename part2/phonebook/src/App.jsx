@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Filter from "./components/Filter";
 import AddPersonForm from "./components/AddPersonForm";
 import PersonsList from "./components/PersonsList";
-
-const PERSONS_URL = "http://localhost:3001/persons";
+import personsService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,9 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    axios.get(PERSONS_URL).then((response) => {
-      setPersons(response.data);
-    });
+    personsService.getAll().then((data) => setPersons(data));
   }, []);
 
   const handleSubmit = (event) => {
@@ -28,12 +24,10 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      // const updatedPersons = [...persons, personToAdd];
-      // setPersons(updatedPersons);
 
-      axios
-        .post(PERSONS_URL, personToAdd)
-        .then((response) => setPersons([...persons, response.data]));
+      personsService
+        .addPerson(personToAdd)
+        .then((data) => setPersons([...persons, data]));
 
       setNewName("");
       setFilterName("");
