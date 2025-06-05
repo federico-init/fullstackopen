@@ -1,4 +1,4 @@
-const PersonsList = ({ persons, searchTerm }) => {
+const PersonsList = ({ persons, searchTerm, onDelete }) => {
   const filteredPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -6,8 +6,9 @@ const PersonsList = ({ persons, searchTerm }) => {
   return (
     <>
       {filteredPersons.map((person) => (
-        <div key={person.name}>
-          {person.name} {person.number}
+        <div key={person.id}>
+          {person.name} {person.number} {""}
+          <button onClick={() => onDelete(person)}>Delete</button>
         </div>
       ))}
     </>

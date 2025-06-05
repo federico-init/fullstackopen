@@ -35,6 +35,18 @@ const App = () => {
     }
   };
 
+  const handleDelete = (personObject) => {
+    if (
+      window.confirm(`Are you sure you want to delete ${personObject.name}?`)
+    ) {
+      personsService
+        .deletePerson(personObject.id)
+        .then((data) =>
+          setPersons(persons.filter((person) => person.id !== data.id))
+        );
+    } else return;
+  };
+
   const handleChangeName = (event) => {
     setNewName(event.target.value);
   };
@@ -66,7 +78,11 @@ const App = () => {
         onChangeNumber={handleChangeNumber}
       />
       <h2>Numbers</h2>
-      <PersonsList persons={persons} searchTerm={filterName} />
+      <PersonsList
+        persons={persons}
+        searchTerm={filterName}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
