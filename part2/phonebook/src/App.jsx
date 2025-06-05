@@ -17,8 +17,20 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (isPersonRegistered(newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const foundId = isPersonRegistered(newName);
+
+    if (foundId) {
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        manageRegisteredPerson({
+          id: foundId,
+          name: newName,
+          number: newNumber,
+        });
+      } else return;
     } else {
       const personToAdd = {
         name: newName,
@@ -62,7 +74,21 @@ const App = () => {
   };
 
   const isPersonRegistered = (name) => {
-    return persons.some((person) => person.name === name);
+    const personFound = persons.find((person) => person.name === name);
+
+    return personFound.id;
+  };
+
+  const manageRegisteredPerson = (personToUpdate) => {
+    personsService
+      .updatePerson(personToUpdate)
+      .then((data) =>
+        setPersons(
+          persons.map((person) =>
+            person.id === personToUpdate.id ? data : person
+          )
+        )
+      );
   };
 
   return (
