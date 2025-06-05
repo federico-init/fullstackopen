@@ -20,6 +20,10 @@ const App = () => {
     setSearchValue(event.target.value);
   };
 
+  const handleClickShow = (countryToShow) => {
+    setData(data.filter((country) => country.name.official === countryToShow));
+  };
+
   return (
     <div>
       <SearchForm
@@ -27,7 +31,11 @@ const App = () => {
         onChange={handleChange}
         value={searchValue}
       />
-      <Content content={data} searchValue={searchValue} />
+      <Content
+        content={data}
+        searchValue={searchValue}
+        onClickShowCountry={handleClickShow}
+      />
     </div>
   );
 };
