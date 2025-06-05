@@ -3,12 +3,15 @@ import Filter from "./components/Filter";
 import AddPersonForm from "./components/AddPersonForm";
 import PersonsList from "./components/PersonsList";
 import personsService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [filterName, setFilterName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     personsService.getAll().then((data) => setPersons(data));
@@ -37,13 +40,17 @@ const App = () => {
         number: newNumber,
       };
 
-      personsService
-        .addPerson(personToAdd)
-        .then((data) => setPersons([...persons, data]));
-
-      setNewName("");
-      setFilterName("");
-      setNewNumber("");
+      personsService.addPerson(personToAdd).then((data) => {
+        setPersons([...persons, data]);
+        setNotificationType("success");
+        setNotificationMessage(`${data.name} added to phonebook!`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 3000);
+        setNewName("");
+        setFilterName("");
+        setNewNumber("");
+      });
     }
   };
 
@@ -55,7 +62,16 @@ const App = () => {
         .deletePerson(personObject.id)
         .then((data) =>
           setPersons(persons.filter((person) => person.id !== data.id))
-        );
+        )
+        .catch((error) => {
+          setNotificationType("error");
+          setNotificationMessage(
+            `${personObject.name} data is no longer available`
+          );
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 3000);
+        });
     } else return;
   };
 
@@ -84,13 +100,30 @@ const App = () => {
   const manageRegisteredPerson = (personToUpdate) => {
     personsService
       .updatePerson(personToUpdate)
-      .then((data) =>
+      .then((data) => {
         setPersons(
           persons.map((person) =>
             person.id === personToUpdate.id ? data : person
           )
-        )
-      );
+        );
+        setNotificationType("success");
+        setNotificationMessage(`${data.name}'s number updated!`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 3000);
+        setNewName("");
+        setFilterName("");
+        setNewNumber("");
+      })
+      .catch((error) => {
+        setNotificationType("error");
+        setNotificationMessage(
+          `${personToUpdate.name} data is no longer available`
+        );
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 3000);
+      });
   };
 
   return (
@@ -111,6 +144,7 @@ const App = () => {
         searchTerm={filterName}
         onDelete={handleDelete}
       />
+      <Notification content={notificationMessage} type={notificationType} />
     </div>
   );
 };
