@@ -74,9 +74,11 @@ const App = () => {
   };
 
   const isPersonRegistered = (name) => {
-    const personFound = persons.find((person) => person.name === name);
+    const personFound = persons.find(
+      (person) => person.name.toLowerCase() === name.toLowerCase()
+    );
 
-    return personFound.id;
+    return personFound?.id;
   };
 
   const manageRegisteredPerson = (personToUpdate) => {
