@@ -24,14 +24,17 @@ let persons = [
   },
 ];
 
+// default route
 app.get("/", (_, response) => {
   response.send("<h1>Hello, world!</h1>");
 });
 
+// GET all resources
 app.get("/api/persons", (_, response) => {
   response.json(persons);
 });
 
+// GET info
 app.get("/info", (_, response) => {
   const requestTimestamp = new Date().toString();
 
@@ -39,6 +42,19 @@ app.get("/info", (_, response) => {
   <p>${requestTimestamp}</p>`;
 
   response.send(htmlBody);
+});
+
+// GET single resource
+app.get("/api/persons/:id", (request, response) => {
+  const id = request.params.id;
+
+  const person = persons.find((person) => person.id === id);
+
+  if (person) {
+    response.json(person);
+  } else {
+    response.status(404).end();
+  }
 });
 
 const PORT = 3001;
