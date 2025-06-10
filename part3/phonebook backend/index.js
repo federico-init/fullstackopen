@@ -28,8 +28,17 @@ app.get("/", (_, response) => {
   response.send("<h1>Hello, world!</h1>");
 });
 
-app.get("/api/persons", (request, response) => {
+app.get("/api/persons", (_, response) => {
   response.json(persons);
+});
+
+app.get("/info", (_, response) => {
+  const requestTimestamp = new Date().toString();
+
+  const htmlBody = `<p>Phonebook has info for ${persons.length} people</p>
+  <p>${requestTimestamp}</p>`;
+
+  response.send(htmlBody);
 });
 
 const PORT = 3001;
