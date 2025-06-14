@@ -60,8 +60,8 @@ const App = () => {
     ) {
       personsService
         .deletePerson(personObject.id)
-        .then((data) =>
-          setPersons(persons.filter((person) => person.id !== data.id))
+        .then(() =>
+          setPersons(persons.filter((person) => person.id !== personObject.id))
         )
         .catch((error) => {
           setNotificationType("error");
