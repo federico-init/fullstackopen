@@ -9,8 +9,8 @@ morgan.token("body", (req, res) => {
   return JSON.stringify(req.body);
 });
 
-app.use(express.json());
 app.use(express.static("dist"));
+app.use(express.json());
 app.use(
   morgan((tokens, req, res) => {
     return [
@@ -45,22 +45,43 @@ app.get("/info", (_, response) => {
 app.get("/api/persons/:id", (request, response) => {
   const id = request.params.id;
 
-  const person = persons.find((person) => person.id === id);
+  Person.findById(id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
 
-  if (person) {
-    response.json(person);
-  } else {
-    response.status(404).end();
-  }
+      response.status(400).json({ error: "malformatted id" });
+    });
 });
 
 // DELETE single resource
 app.delete("/api/persons/:id", (request, response) => {
   const id = request.params.id;
 
-  persons = persons.filter((person) => person.id !== id);
+  Person.findByIdAndDelete(id)
+    .then((person) => {
+      console.log(person);
 
-  response.status(204).end();
+      if (person) {
+        console.log("dentro l'if");
+
+        response.status(204).end();
+      } else {
+        console.log("dentro l'else");
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+
+      response.status(400).json({ error: "malformatted id" });
+    });
 });
 
 // POST
