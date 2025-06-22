@@ -32,13 +32,17 @@ app.get("/api/persons", (_, response) => {
 });
 
 // GET info
-app.get("/info", (_, response) => {
+app.get("/info", (_, response, next) => {
   const requestTimestamp = new Date().toString();
 
-  const htmlBody = `<p>Phonebook has info for ${persons.length} people</p>
-  <p>${requestTimestamp}</p>`;
+  Person.countDocuments({})
+    .then((count) => {
+      const htmlBody = `<p>Phonebook has info for ${count} people</p>
+      <p>${requestTimestamp}</p>`;
 
-  response.send(htmlBody);
+      response.send(htmlBody);
+    })
+    .catch((error) => next(error));
 });
 
 // GET single resource
