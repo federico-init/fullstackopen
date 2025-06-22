@@ -75,12 +75,6 @@ app.delete("/api/persons/:id", (request, response, next) => {
 app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
-  // if (persons.some((person) => person.name === body.name)) {
-  //   return response.status(400).json({
-  //     error: "name must be unique",
-  //   });
-  // }
-
   if (!body.name || !body.number) {
     return response.status(400).json({
       error: "name or number is missing",
@@ -102,7 +96,34 @@ app.post("/api/persons", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-// error handler
+// PUT
+app.put("/api/persons/:id", (request, response, next) => {
+  const id = request.params.id;
+
+  const body = request.body;
+
+  if (!body.number) {
+    return response.status(400).json({
+      error: "name or number is missing",
+    });
+  }
+
+  const updatedPerson = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(id, updatedPerson, { new: true })
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
 const errorHandler = (error, request, response, next) => {
   console.log(error.message);
 
