@@ -42,7 +42,7 @@ app.get("/info", (_, response) => {
 });
 
 // GET single resource
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
 
   Person.findById(id)
@@ -53,39 +53,26 @@ app.get("/api/persons/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-
-      response.status(400).json({ error: "malformatted id" });
-    });
+    .catch((error) => next(error));
 });
 
 // DELETE single resource
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   const id = request.params.id;
 
   Person.findByIdAndDelete(id)
     .then((person) => {
-      console.log(person);
-
       if (person) {
-        console.log("dentro l'if");
-
         response.status(204).end();
       } else {
-        console.log("dentro l'else");
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-
-      response.status(400).json({ error: "malformatted id" });
-    });
+    .catch((error) => next(error));
 });
 
 // POST
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   // if (persons.some((person) => person.name === body.name)) {
@@ -105,12 +92,28 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((result) => {
-    console.log(result);
-    console.log(`added ${result.name} number ${result.number} to phonebook`);
-    response.json(person);
-  });
+  person
+    .save()
+    .then((result) => {
+      console.log(result);
+      console.log(`added ${result.name} number ${result.number} to phonebook`);
+      response.json(person);
+    })
+    .catch((error) => next(error));
 });
+
+// error handler
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
