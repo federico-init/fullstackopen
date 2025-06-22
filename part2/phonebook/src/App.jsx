@@ -40,17 +40,27 @@ const App = () => {
         number: newNumber,
       };
 
-      personsService.addPerson(personToAdd).then((data) => {
-        setPersons([...persons, data]);
-        setNotificationType("success");
-        setNotificationMessage(`${data.name} added to phonebook!`);
-        setTimeout(() => {
-          setNotificationMessage(null);
-        }, 3000);
-        setNewName("");
-        setFilterName("");
-        setNewNumber("");
-      });
+      personsService
+        .addPerson(personToAdd)
+        .then((data) => {
+          setPersons([...persons, data]);
+          setNotificationType("success");
+          setNotificationMessage(`${data.name} added to phonebook!`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 3000);
+          setNewName("");
+          setFilterName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          setNotificationType("error");
+          setNotificationMessage(error.response.data.error);
+
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 3000);
+        });
     }
   };
 
