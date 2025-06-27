@@ -9,13 +9,25 @@ const totalLikes = (blogs) => {
 
   const reducer = (sum, blog) => {
     logger.info(sum)
-    return sum + blog
+    return sum + blog.likes
   }
 
-  return blogs.map((blog) => blog.likes).reduce(reducer, 0)
+  return blogs.reduce(reducer, 0)
+}
+
+// The function returns the blog with the most likes.
+// If there are multiple favorites, it is sufficient for the function to return any one of them.
+const favoriteBlog = (blogs) => {
+  if (!blogs.length) return undefined
+
+  const reducer = (prev, current) =>
+    prev && prev.likes > current.likes ? prev : current
+
+  return blogs.reduce(reducer, blogs[0].likes)
 }
 
 module.exports = {
   dummy,
   totalLikes,
+  favoriteBlog,
 }
