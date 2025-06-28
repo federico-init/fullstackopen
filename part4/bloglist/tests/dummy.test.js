@@ -150,4 +150,26 @@ describe("author with most blogs", () => {
     const result = listHelper.mostBlogs(listWithMultipleBlogs)
     assert.deepStrictEqual(result, authorWithMostBlogs)
   })
+
+  test("of a bigger list with a tiem return one of the top authors", () => {
+    const listWithTie = [
+      ...listWithMultipleBlogs,
+      {
+        _id: "_id",
+        title: "Another Dijkstra Blog",
+        author: "Edsger W. Dijkstra",
+        url: "url",
+        likes: 10,
+        __v: 0,
+      },
+    ]
+
+    const result = listHelper.mostBlogs(listWithTie)
+
+    assert.strictEqual(result.blogs, 3)
+
+    const authorsWithMostBlogs = ["Robert C. Martin", "Edsger W. Dijkstra"]
+
+    assert.ok(authorsWithMostBlogs.includes(result.author))
+  })
 })
